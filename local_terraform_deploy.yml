@@ -30,17 +30,22 @@
         src: /tmp/srv/provider.tf
         dest: /tmp/srv/
         
-    - name: Command
-      command:
-        "ls /tmp/srv/{{ inventory_hostname }}/tmp/"
-      register: output
-      delegate_to: localhost
+    - name: Store file
+      ansible.builtin.fetch:
+        src: /tmp/srv/terraform.tfstate
+        dest: /tmp/srv/
+        
+    # - name: Command
+    #   command:
+    #     "ls /tmp/srv/{{ inventory_hostname }}/tmp/"
+    #   register: output
+    #   delegate_to: localhost
       
-    - name: Command
-      command:
-        "ls /tmp/srv/{{ inventory_hostname }}/tmp/srv"
-      register: output
-      delegate_to: localhost
+    # - name: Command
+    #   command:
+    #     "ls /tmp/srv/{{ inventory_hostname }}/tmp/srv"
+    #   register: output
+    #   delegate_to: localhost
     
     - name: Creating Terraform IoC
       block:
@@ -58,7 +63,7 @@
     
     - name: Command
       command:
-        "ls /tmp/srv/{{ inventory_hostname }}/tmp/srv"
+        "ls -lahtr /tmp/srv/{{ inventory_hostname }}/tmp/srv"
       register: output
       delegate_to: localhost
 
