@@ -24,7 +24,13 @@
       ansible.builtin.fetch:
         src: /tmp/srv/main.tf
         dest: /tmp/srv/
-
+        
+    - name: Command
+      command:
+        "ls /tmp/srv/{{ inventory_hostname }}/tmp/"
+      register: output
+      delegate_to: localhost
+      
     - name: Command
       command:
         "ls /tmp/srv/{{ inventory_hostname }}/tmp/srv"
