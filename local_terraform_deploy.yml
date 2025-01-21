@@ -56,10 +56,11 @@
     #   ansible.builtin.pause:
     #     minutes: 1
     
-    # - name: Command
-    #   command:
-    #     "ls {{working_dir}}"
-    #   register: output
+    - name: Command
+      command:
+        "ls /tmp/srv/{{ inventory_hostname }}/tmp/srv"
+      register: output
+      delegate_to: localhost
 
         
   
