@@ -25,6 +25,11 @@
         path: /{{ working_dir }}/{{ instruqt_tf_build }}
         state: directory
         mode: '755'
+
+     - name: Print data
+       command: "ls {{ working_dir }}"
+       register: ls_data
+       
         
      # - name: Create cloud-init for Terraform manifest
      #   ansible.builtin.copy:
