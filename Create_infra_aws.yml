@@ -15,7 +15,14 @@
         repo: "https://github.com/yathriajkr/terraform_builds.git"
         dest: /tmp/srv
         clone: yes
-
+        
+     - name: Clone Terraform Manifests and build repo
+       ansible.builtin.git:
+        repo: "https://github.com/yathriajkr/terraform_deploy.git"
+        dest: "/tmp/srv/src_code"
+        clone: yes
+        
+     
      - name: Print Directory
        debug:
          msg: "{{ playbook_dir }}"
@@ -26,21 +33,21 @@
         state: directory
         mode: '755'
 
-     - name: Print data
-       command: "ls {{ working_dir }}"
-       register: ls_data
-       
-        
+            
      # - name: Create cloud-init for Terraform manifest
      #   ansible.builtin.copy:
      #    src: cloud-init.conf
      #    dest: /{{ working_dir }}/{{ instruqt_tf_build }}/cloud-init.conf
         
-     # - name: Create main Terraform manifest
-     #   template:
-     #    src: main.j2
-     #    dest: /{{ working_dir }}/{{ instruqt_tf_build }}/main.tf
+     - name: Create main Terraform manifest
+       ansible.builtin.copy:
+        src: "/tmp/srv/src_code/main.tf"
+        dest: /{{ working_dir }}/{{ instruqt_tf_build }}/main.tf
         
+     - name: Print data
+       command: " ls /{{ working_dir }}/{{ instruqt_tf_build }}"
+       register: ls_data
+       
 #### Terraform Deploy
      # - name: Create gitignore for Terraform working files
      #   ansible.builtin.copy:
