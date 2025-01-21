@@ -62,6 +62,11 @@
       register: output
       delegate_to: localhost
 
+    - name: copy files
+      copy:
+        src: "/tmp/srv/{{ inventory_hostname }}/tmp/srv/terraform.tfstate"
+        dest: /tmp/srv/terraform.tfstate
+
         
   
 
