@@ -1,0 +1,55 @@
+---
+- name: Create Terraform manifests and components
+  hosts: localhost
+  connection: local
+  collections:
+   - cloud.terraform
+
+  vars:
+    instruqt_tf_build: "Ansible_Build"
+    
+  tasks:
+     - name: Clone Terraform Manifests and build repo
+       ansible.builtin.git:
+        repo: "https://github.com/yathriajkr/terraform_builds.git"
+        dest: /tmp/srv
+        clone: yes
+        
+     - name: Create Terraform project 
+       ansible.builtin.file:
+        path: /{{ working_dir }}/{{ instruqt_tf_build }}
+        state: directory
+        mode: '755'
+        
+     - name: Create cloud-init for Terraform manifest
+       ansible.builtin.copy:
+        src: cloud-init.conf
+        dest: /{{ working_dir }}/{{ instruqt_tf_build }}/cloud-init.conf
+        
+     - name: Create main Terraform manifest
+       template:
+        src: main.j2
+        dest: /{{ working_dir }}/{{ instruqt_tf_build }}/main.tf
+        
+#### Terraform Deploy
+     - name: Create gitignore for Terraform working files
+       ansible.builtin.copy:
+        dest: /{{ working_dir }}/{{ instruqt_tf_build }}/.gitignore
+        content: |
+          .terraform
+          .terraform.lock.hcl          
+          
+     - name: Creating Terraform IoC
+       block:
+         - name: Initialize Terraform Provider
+           cloud.terraform.terraform:
+            project_path: /{{ working_dir }}/{{ instruqt_tf_build }}
+            state: present
+            force_init: true
+           register: deployed_tf
+           
+     - name: Allowing AWS time to spin up instance
+       ansible.builtin.pause:
+        minutes: 1
+    
+        
