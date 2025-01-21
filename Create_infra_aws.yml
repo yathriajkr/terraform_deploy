@@ -7,7 +7,7 @@
 
   vars:
     instruqt_tf_build: "Ansible_Build"
-    
+    working_dir: /tmp/srv/
     
   tasks:
      - name: Clone Terraform Manifests and build repo
