@@ -18,7 +18,7 @@
 
      - name: Print Directory
        debug:
-         msg: "{{ base_path }} {{ playbook_dir }}"
+         msg: "{{ playbook_dir }}"
                  
      - name: Create Terraform project 
        ansible.builtin.file:
