@@ -56,14 +56,14 @@
      #      .terraform
      #      .terraform.lock.hcl          
           
-     # - name: Creating Terraform IoC
-     #   block:
-     #     - name: Initialize Terraform Provider
-     #       cloud.terraform.terraform:
-     #        project_path: /{{ working_dir }}/{{ instruqt_tf_build }}
-     #        state: present
-     #        force_init: true
-     #       register: deployed_tf
+     - name: Creating Terraform IoC
+       block:
+         - name: Initialize Terraform Provider
+           cloud.terraform.terraform:
+            project_path: /{{ working_dir }}/{{ instruqt_tf_build }}
+            state: present
+            force_init: true
+           register: deployed_tf
            
      # - name: Allowing AWS time to spin up instance
      #   ansible.builtin.pause:
