@@ -20,24 +20,35 @@
         "ls {{working_dir}}"
       register: output
       
-    - name: Creating Terraform IoC
-      block:
-        - name: Initialize Terraform Provider
-          cloud.terraform.terraform:
-            project_path: "{{ working_dir }}"
-            state: present
-            force_init: true
-          register: deployed_tf
-          delegate_to: localhost
-           
-    - name: Allowing AWS time to spin up instance
-      ansible.builtin.pause:
-        minutes: 1
-    
+    - name: Store file
+      ansible.builtin.fetch:
+        src: /tmp/srv
+        dest: /tmp/srv/ansible_test
+
     - name: Command
       command:
-        "ls {{working_dir}}"
+        "ls /tmp/srv/ansible_test"
       register: output
+      delegate_to: localhost
+    
+    # - name: Creating Terraform IoC
+    #   block:
+    #     - name: Initialize Terraform Provider
+    #       cloud.terraform.terraform:
+    #         project_path: "{{ working_dir }}"
+    #         state: present
+    #         force_init: true
+    #       register: deployed_tf
+    #       delegate_to: localhost
+           
+    # - name: Allowing AWS time to spin up instance
+    #   ansible.builtin.pause:
+    #     minutes: 1
+    
+    # - name: Command
+    #   command:
+    #     "ls {{working_dir}}"
+    #   register: output
 
         
   
