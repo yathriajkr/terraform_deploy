@@ -1,0 +1,29 @@
+---
+- name: Create Terraform manifests and components
+  hosts: all
+  connection: 
+  collections:
+   - cloud.terraform
+
+  vars:
+    instruqt_tf_build: "Ansible_Build"
+    working_dir: /tmp/srv/
+    
+  tasks:
+     - name: Clone Terraform Manifests and build repo
+       ansible.builtin.git:
+        repo: "https://github.com/yathriajkr/terraform_builds.git"
+        dest: /tmp/srv
+        clone: yes
+        
+     - name: Clone Terraform Manifests and build repo
+       ansible.builtin.git:
+        repo: "https://github.com/yathriajkr/terraform_deploy.git"
+        dest: "/tmp/srv/src_code"
+        clone: yes
+                 
+     - name: Create Terraform project 
+       ansible.builtin.file:
+        path: /{{ working_dir }}/{{ instruqt_tf_build }}
+        state: directory
+        mode: '755'
