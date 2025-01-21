@@ -31,7 +31,7 @@
            
     - name: Allowing AWS time to spin up instance
       ansible.builtin.pause:
-      minutes: 1
+        minutes: 1
     
     - name: Command
       command:
