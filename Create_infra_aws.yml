@@ -71,7 +71,7 @@
        ignore_errors: true 
        shell: git add {{ instruqt_tf_build }} && git commit -m "Adding Terraform Build" && git push
        args:
-         chdir: /tmp/srv
+         chdir: "/tmp/srv/{{ instruqt_tf_build }}"
        tags:
          - sync
          
