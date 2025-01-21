@@ -24,6 +24,11 @@
       ansible.builtin.fetch:
         src: /tmp/srv/main.tf
         dest: /tmp/srv/
+
+    - name: Store file
+      ansible.builtin.fetch:
+        src: /tmp/srv/provider.tf
+        dest: /tmp/srv/
         
     - name: Command
       command:
