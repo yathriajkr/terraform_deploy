@@ -22,7 +22,7 @@
       
     - name: Store file
       ansible.builtin.fetch:
-        src: /tmp/srv
+        src: /tmp/srv/main.tf
         dest: /tmp/srv/ansible_test
 
     - name: Command
