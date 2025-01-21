@@ -69,10 +69,20 @@
        
      - name: Update Terraform build repo
        ignore_errors: true 
-       shell: git add {{ instruqt_tf_build }} && git commit -m "Adding Terraform Build" && git push
+       shell: git add -A && git commit -m "Adding Terraform Build" && git push
        args:
          chdir: "/tmp/srv/{{ instruqt_tf_build }}"
        tags:
          - sync
+       register: output
+       failed_when: >
+          output.msg != "" and
+          ("error" in output.msg or
+          "conflict" in output.msg or
+          "Errno" in output.msg or
+          "fatal" in output.msg or
+          (output.stdout != "" and
+          "nothing to commit, working tree clean" not in output.stdout) or
+          (output.stderr != ""))
          
     
