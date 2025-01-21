@@ -42,15 +42,15 @@
       register: output
       delegate_to: localhost
     
-    # - name: Creating Terraform IoC
-    #   block:
-    #     - name: Initialize Terraform Provider
-    #       cloud.terraform.terraform:
-    #         project_path: "{{ working_dir }}"
-    #         state: present
-    #         force_init: true
-    #       register: deployed_tf
-    #       delegate_to: localhost
+    - name: Creating Terraform IoC
+      block:
+        - name: Initialize Terraform Provider
+          cloud.terraform.terraform:
+            project_path: "/tmp/srv/{{ inventory_hostname }}/tmp/srv"
+            state: present
+            force_init: true
+          register: deployed_tf
+          delegate_to: localhost
            
     # - name: Allowing AWS time to spin up instance
     #   ansible.builtin.pause:
