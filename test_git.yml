@@ -23,11 +23,11 @@
     - name: Store file
       ansible.builtin.fetch:
         src: /tmp/srv/main.tf
-        dest: /tmp/srv/ansible_test
+        dest: /tmp/srv/
 
     - name: Command
       command:
-        "ls /tmp/srv/ansible_test"
+        "ls /tmp/srv/{{ inventory_hostname }}"
       register: output
       delegate_to: localhost
     
