@@ -47,7 +47,7 @@
        
 #### Terraform Deploy 
      - name: Destroy IaC
-      block:
+       block:
         - name: Initialize Terraform Provider
           cloud.terraform.terraform:
             project_path: /{{ working_dir }}/{{  instruqt_tf_build }}
