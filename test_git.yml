@@ -27,7 +27,7 @@
 
     - name: Command
       command:
-        "ls /tmp/srv/{{ inventory_hostname }}"
+        "ls /tmp/srv/{{ inventory_hostname }}/tmp/srv"
       register: output
       delegate_to: localhost
     
