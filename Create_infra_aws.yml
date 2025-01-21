@@ -21,11 +21,6 @@
         repo: "https://github.com/yathriajkr/terraform_deploy.git"
         dest: "/tmp/srv/src_code"
         clone: yes
-        
-     
-     - name: Print Directory
-       debug:
-         msg: "{{ playbook_dir }}"
                  
      - name: Create Terraform project 
        ansible.builtin.file:
@@ -48,13 +43,13 @@
        command: " ls /{{ working_dir }}/{{ instruqt_tf_build }}"
        register: ls_data
        
-#### Terraform Deploy
-     # - name: Create gitignore for Terraform working files
-     #   ansible.builtin.copy:
-     #    dest: /{{ working_dir }}/{{ instruqt_tf_build }}/.gitignore
-     #    content: |
-     #      .terraform
-     #      .terraform.lock.hcl          
+### Terraform Deploy
+     - name: Create gitignore for Terraform working files
+       ansible.builtin.copy:
+        dest: /{{ working_dir }}/{{ instruqt_tf_build }}/.gitignore
+        content: |
+          .terraform
+          .terraform.lock.hcl          
           
      - name: Creating Terraform IoC
        block:
@@ -65,8 +60,19 @@
             force_init: true
            register: deployed_tf
            
-     # - name: Allowing AWS time to spin up instance
-     #   ansible.builtin.pause:
-     #    minutes: 1
+     - name: Allowing AWS time to spin up instance
+       ansible.builtin.pause:
+        minutes: 1
+
+     - name: Configure Git details
+       shell: git config --global user.name "yathirajkr" && git config --global user.email "ykellodu@redhat.com"
+       
+     - name: Update Terraform build repo
+       ignore_errors: true 
+       shell: git add {{ instruqt_tf_build }} && git commit -m "Adding Terraform Build" && git push
+       args:
+         chdir: /tmp/srv
+       tags:
+         - sync
+         
     
-        
