@@ -1,0 +1,65 @@
+---
+- name: Create Terraform manifests and components
+  hosts: localhost
+  connection: local
+  collections:
+   - cloud.terraform
+
+  vars:
+    instruqt_tf_build: "Ansible_Build"
+    working_dir: /tmp/srv/
+    
+  tasks:
+     - name: Clone Terraform Manifests and build repo
+       ansible.builtin.git:
+        repo: "https://github.com/yathriajkr/terraform_builds.git"
+        dest: /tmp/srv
+        clone: yes
+        
+     - name: Clone Terraform Manifests and build repo
+       ansible.builtin.git:
+        repo: "https://github.com/yathriajkr/terraform_deploy.git"
+        dest: "/tmp/srv/src_code"
+        clone: yes
+        
+     
+     - name: Print Directory
+       debug:
+         msg: "{{ playbook_dir }}"
+                 
+     - name: Create Terraform project 
+       ansible.builtin.file:
+        path: /{{ working_dir }}/{{ instruqt_tf_build }}
+        state: directory
+        mode: '755'
+
+            
+     # - name: Create cloud-init for Terraform manifest
+     #   ansible.builtin.copy:
+     #    src: cloud-init.conf
+     #    dest: /{{ working_dir }}/{{ instruqt_tf_build }}/cloud-init.conf
+        
+     - name: Create main Terraform manifest
+       ansible.builtin.copy:
+        src: "/tmp/srv/src_code/main.tf"
+        dest: /{{ working_dir }}/{{ instruqt_tf_build }}/main.tf
+        
+       
+#### Terraform Deploy 
+     - name: Destroy IaC
+      block:
+        - name: Initialize Terraform Provider
+          cloud.terraform.terraform:
+            project_path: /{{ working_dir }}/{{  instruqt_tf_build }}
+            state: absent
+            force_init: true
+              
+        - name: Destroy Terraform Instance
+          cloud.terraform.terraform:
+            project_path: /{{ working_dir }}/{{ instruqt_tf_build }}
+            state: absent
+
+        - name: Remove local cached files
+          ansible.builtin.file:
+            path: "{{ working_dir }}/{{ instruqt_tf_build }}"
+            state: absent
