@@ -9,36 +9,38 @@
     working_dir: /tmp/srv/
     
   tasks:
-    # - name: Create Terraform project 
-    #   ansible.builtin.file:
-    #     path: /{{ working_dir }}/{{ instruqt_tf_build }}
-    #     state: directory
-    #     mode: '755'
+    - name: Create Terraform project 
+      ansible.builtin.file:
+        path: /{{ working_dir }}/{{ instruqt_tf_build }}
+        state: directory
+        mode: '755'
         
-    # - name: Command
-    #   command:
-    #     "ls {{working_dir}}"
-    #   register: output
+    - name: Command
+      command:
+        "ls {{working_dir}}"
+      register: output
       
-    - name: Store file
-      ansible.builtin.fetch:
-        src: /tmp/srv/main.tf
-        dest: /tmp/srv/
+    # - name: Store file
+    #   ansible.builtin.fetch:
+    #     src: /tmp/srv/main.tf
+    #     dest: /tmp/srv/
 
-    - name: Store file
-      ansible.builtin.fetch:
-        src: /tmp/srv/provider.tf
-        dest: /tmp/srv/
+    # - name: Store file
+    #   ansible.builtin.fetch:
+    #     src: /tmp/srv/provider.tf
+    #     dest: /tmp/srv/
 
     - name: Template a file to /etc/file.conf
       ansible.builtin.template:
         src: templates/main.j2
         dest: /tmp/srv/main.tf
+      delegate_to: localhost
         
     - name: Template a file to /etc/file.conf
       ansible.builtin.template:
         src: templates/provider.j2
         dest: /tmp/srv/provider.tf
+      delegate_to: localhost
 
     # - name: Store file
     #   ansible.builtin.fetch:
@@ -57,11 +59,17 @@
     #   register: output
     #   delegate_to: localhost
     
+    - name: Command
+      command:
+        "ls -lahtr /tmp/srv/"
+      register: output
+      delegate_to: localhost
+      
     - name: Creating Terraform IoC
       block:
         - name: Initialize Terraform Provider
           cloud.terraform.terraform:
-            project_path: "/tmp/srv/{{ inventory_hostname }}/tmp/srv"
+            project_path: "/tmp/srv/"
             state: present
             force_init: true
           register: deployed_tf
@@ -73,14 +81,14 @@
     
     - name: Command
       command:
-        "ls -lahtr /tmp/srv/{{ inventory_hostname }}/tmp/srv"
+        "ls -lahtr /tmp/srv/"
       register: output
       delegate_to: localhost
 
-    - name: copy files
-      copy:
-        src: "/tmp/srv/{{ inventory_hostname }}/tmp/srv/terraform.tfstate"
-        dest: /tmp/srv/terraform.tfstate
+    # - name: copy files
+    #   copy:
+    #     src: "/tmp/srv/{{ inventory_hostname }}/tmp/srv/terraform.tfstate"
+    #     dest: /tmp/srv/terraform.tfstate
 
         
   
