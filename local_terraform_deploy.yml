@@ -73,6 +73,12 @@
       register: output
       delegate_to: localhost
       
+    - name: copy files
+      copy:
+        src: "/tmp/srv/{{ inventory_hostname }}/tmp/srv/provider.tf"
+        dest: /tmp/srv/provider.tf
+      delegate_to: localhost
+      
     - name: Creating Terraform IoC
       block:
         - name: Initialize Terraform Provider
