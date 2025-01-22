@@ -8,6 +8,6 @@ terraform {
 }
 provider "aws" {
     region = "us-west-2"
-    access_key = {{ username_aws_c }}
-    secret_key = {{ password_aws_c }}
+    access_key = "{{ username_aws_c }}"
+    secret_key = "{{ password_aws_c }}"
 }
