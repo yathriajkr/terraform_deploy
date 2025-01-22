@@ -33,10 +33,10 @@
     #     src: /tmp/srv/main.tf
     #     dest: /tmp/srv/
 
-    - name: Store file
-      ansible.builtin.fetch:
-        src: /tmp/srv/provider.tf
-        dest: /tmp/srv/
+    # - name: Store file
+    #   ansible.builtin.fetch:
+    #     src: /tmp/srv/provider.tf
+    #     dest: /tmp/srv/
 
     - name: Template a file to /etc/file.conf
       ansible.builtin.template:
@@ -44,11 +44,11 @@
         dest: /tmp/srv/main.tf
       delegate_to: localhost
         
-    # - name: Template a file to /etc/file.conf
-    #   ansible.builtin.template:
-    #     src: templates/provider.j2
-    #     dest: /tmp/srv/provider.tf
-    #   delegate_to: localhost
+    - name: Template a file to /etc/file.conf
+      ansible.builtin.template:
+        src: templates/provider.j2
+        dest: /tmp/srv/provider.tf
+      delegate_to: localhost
 
     # - name: Store file
     #   ansible.builtin.fetch:
@@ -60,40 +60,28 @@
     #     "ls /tmp/srv/{{ inventory_hostname }}/tmp/"
     #   register: output
     #   delegate_to: localhost
+          
+    - name: Command
+      command:
+        "ls -lahtr /tmp/srv/"
+      register: output
+      delegate_to: localhost
       
-    # - name: Command
-    #   command:
-    #     "ls /tmp/srv/{{ inventory_hostname }}/tmp/srv"
-    #   register: output
+    # - name: copy files
+    #   copy:
+    #     src: "/tmp/srv/{{ inventory_hostname }}/tmp/srv/provider.tf"
+    #     dest: /tmp/srv/provider.tf
     #   delegate_to: localhost
-    
-    - name: Command
-      command:
-        "ls -lahtr /tmp/srv/"
-      register: output
-      delegate_to: localhost
       
-    - name: copy files
-      copy:
-        src: "/tmp/srv/{{ inventory_hostname }}/tmp/srv/provider.tf"
-        dest: /tmp/srv/provider.tf
-      delegate_to: localhost
-
-    - name: Command
-      command:
-        "ls -lahtr /tmp/srv/"
-      register: output
-      delegate_to: localhost
-      
-    # - name: Creating Terraform IoC
-    #   block:
-    #     - name: Initialize Terraform Provider
-    #       cloud.terraform.terraform:
-    #         project_path: "/tmp/srv/"
-    #         state: present
-    #         force_init: true
-    #       register: deployed_tf
-    #       delegate_to: localhost
+    - name: Creating Terraform IoC
+      block:
+        - name: Initialize Terraform Provider
+          cloud.terraform.terraform:
+            project_path: "/tmp/srv/"
+            state: present
+            force_init: true
+          register: deployed_tf
+          delegate_to: localhost
            
     # - name: Allowing AWS time to spin up instance
     #   ansible.builtin.pause:
