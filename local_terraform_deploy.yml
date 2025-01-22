@@ -9,16 +9,16 @@
     working_dir: /tmp/srv/
     
   tasks:
-    - name: Create Terraform project 
-      ansible.builtin.file:
-        path: /{{ working_dir }}/{{ instruqt_tf_build }}
-        state: directory
-        mode: '755'
+    # - name: Create Terraform project 
+    #   ansible.builtin.file:
+    #     path: /{{ working_dir }}/{{ instruqt_tf_build }}
+    #     state: directory
+    #     mode: '755'
         
-    - name: Command
-      command:
-        "ls {{working_dir}}"
-      register: output
+    # - name: Command
+    #   command:
+    #     "ls {{working_dir}}"
+    #   register: output
       
     - name: Store file
       ansible.builtin.fetch:
@@ -29,25 +29,21 @@
       ansible.builtin.fetch:
         src: /tmp/srv/provider.tf
         dest: /tmp/srv/
+
+    - name: Template a file to /etc/file.conf
+      ansible.builtin.template:
+        src: templates/main.j2
+        dest: /tmp/srv/main.tf
         
     - name: Template a file to /etc/file.conf
       ansible.builtin.template:
         src: templates/provider.j2
         dest: /tmp/srv/provider.tf
 
-    - name: get the data
-      command:
-        cat /tmp/srv/provider.tf
-      register: data
-      
-    - name: Store file
-      ansible.builtin.fetch:
-        src: /tmp/srv/terraform.tfstate
-        dest: /tmp/srv/
-        
-    - name: Print data
-      debug:
-        msg: "{{ username_aws_c }}"
+    # - name: Store file
+    #   ansible.builtin.fetch:
+    #     src: /tmp/srv/terraform.tfstate
+    #     dest: /tmp/srv/
         
     # - name: Command
     #   command:
@@ -61,15 +57,15 @@
     #   register: output
     #   delegate_to: localhost
     
-    # - name: Creating Terraform IoC
-    #   block:
-    #     - name: Initialize Terraform Provider
-    #       cloud.terraform.terraform:
-    #         project_path: "/tmp/srv/{{ inventory_hostname }}/tmp/srv"
-    #         state: present
-    #         force_init: true
-    #       register: deployed_tf
-    #       delegate_to: localhost
+    - name: Creating Terraform IoC
+      block:
+        - name: Initialize Terraform Provider
+          cloud.terraform.terraform:
+            project_path: "/tmp/srv/{{ inventory_hostname }}/tmp/srv"
+            state: present
+            force_init: true
+          register: deployed_tf
+          delegate_to: localhost
            
     # - name: Allowing AWS time to spin up instance
     #   ansible.builtin.pause:
