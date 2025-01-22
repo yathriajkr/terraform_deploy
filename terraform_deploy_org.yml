@@ -34,6 +34,7 @@
       stat:
         path: tmp/srv/terraform.tfstate
       register: stat_result
+      ignore_errors: True
         
     - name: Store file
       ansible.builtin.fetch:
