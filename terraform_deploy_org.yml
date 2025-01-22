@@ -53,6 +53,12 @@
     #   register: output
     #   delegate_to: localhost
     
+    - name: Command
+      command:
+        "ls -lahtr /tmp/srv/{{ inventory_hostname }}/tmp/srv"
+      register: output
+      delegate_to: localhost
+      
     - name: Creating Terraform IoC
       block:
         - name: Initialize Terraform Provider
