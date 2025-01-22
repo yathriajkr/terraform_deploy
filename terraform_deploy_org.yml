@@ -1,0 +1,76 @@
+---
+- name: Create Terraform manifests and components
+  hosts: all
+  collections:
+   - cloud.terraform
+
+  vars:
+    instruqt_tf_build: "Ansible_Build"
+    working_dir: /tmp/srv/
+    
+  tasks:
+    - name: Create Terraform project 
+      ansible.builtin.file:
+        path: /{{ working_dir }}/{{ instruqt_tf_build }}
+        state: directory
+        mode: '755'
+        
+    - name: Command
+      command:
+        "ls {{working_dir}}"
+      register: output
+      
+    - name: Store file
+      ansible.builtin.fetch:
+        src: /tmp/srv/main.tf
+        dest: /tmp/srv/
+
+    - name: Store file
+      ansible.builtin.fetch:
+        src: /tmp/srv/provider.tf
+        dest: /tmp/srv/
+        
+    - name: Store file
+      ansible.builtin.fetch:
+        src: /tmp/srv/terraform.tfstate
+        dest: /tmp/srv/
+        
+    # - name: Command
+    #   command:
+    #     "ls /tmp/srv/{{ inventory_hostname }}/tmp/"
+    #   register: output
+    #   delegate_to: localhost
+      
+    # - name: Command
+    #   command:
+    #     "ls /tmp/srv/{{ inventory_hostname }}/tmp/srv"
+    #   register: output
+    #   delegate_to: localhost
+    
+    - name: Creating Terraform IoC
+      block:
+        - name: Initialize Terraform Provider
+          cloud.terraform.terraform:
+            project_path: "/tmp/srv/{{ inventory_hostname }}/tmp/srv"
+            state: present
+            force_init: true
+          register: deployed_tf
+          delegate_to: localhost
+           
+    # - name: Allowing AWS time to spin up instance
+    #   ansible.builtin.pause:
+    #     minutes: 1
+    
+    - name: Command
+      command:
+        "ls -lahtr /tmp/srv/{{ inventory_hostname }}/tmp/srv"
+      register: output
+      delegate_to: localhost
+
+    - name: copy files
+      copy:
+        src: "/tmp/srv/{{ inventory_hostname }}/tmp/srv/terraform.tfstate"
+        dest: /tmp/srv/terraform.tfstate
+
+        
+  
