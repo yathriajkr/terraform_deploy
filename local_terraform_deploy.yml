@@ -34,6 +34,9 @@
       ansible.builtin.fetch:
         src: /tmp/srv/terraform.tfstate
         dest: /tmp/srv/
+    - name: Print data
+      debug:
+        msg: "{{ access_key }}"
         
     # - name: Command
     #   command:
