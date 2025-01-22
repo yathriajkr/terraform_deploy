@@ -29,11 +29,17 @@
       ansible.builtin.fetch:
         src: /tmp/srv/provider.tf
         dest: /tmp/srv/
+
+    - name: Check that the file exists
+      stat:
+        path: tmp/srv/terraform.tfstate
+      register: stat_result
         
     - name: Store file
       ansible.builtin.fetch:
         src: /tmp/srv/terraform.tfstate
         dest: /tmp/srv/
+      when: not stat_result.stat.exists
         
     # - name: Command
     #   command:
