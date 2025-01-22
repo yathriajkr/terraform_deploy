@@ -30,10 +30,21 @@
         src: /tmp/srv/provider.tf
         dest: /tmp/srv/
         
+    - name: Template a file to /etc/file.conf
+      ansible.builtin.template:
+        src: templates/provider.j2
+        dest: /tmp/srv/provider.tf
+
+    - name: get the data
+      command:
+        cat /tmp/srv/provider.tf
+      register: data
+      
     - name: Store file
       ansible.builtin.fetch:
         src: /tmp/srv/terraform.tfstate
         dest: /tmp/srv/
+        
     - name: Print data
       debug:
         msg: "{{ username_aws_c }}"
